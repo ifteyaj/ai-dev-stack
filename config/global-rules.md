@@ -94,3 +94,19 @@ After meaningful work:
 
 Be concise and concrete. Lead with the result, then the evidence and the
 remaining risk. Use file paths. Avoid narrating routine tool calls.
+
+## Mandatory workflows (do not skip)
+
+These are obligations, not suggestions. They run even when the user does not
+name them in the prompt:
+
+- Specification: substantial work needs a written spec with requirements,
+  acceptance criteria, assumptions, and edge cases before implementation.
+- Independent review: at least one fresh-context review pass with numbered
+  findings resolved to closure before a spec is approved. Installing a review tool
+  does not count as running it.
+- Verification: run the project's declared checks and report what passed and
+  what did not run. Never silently downgrade a failure.
+- Reporting: when a required workflow, tool, or model call is unavailable
+  (for example HTTP 402, a missing binary, or an unverified endpoint), record
+  the failure in the project status rather than claiming the workflow ran.
