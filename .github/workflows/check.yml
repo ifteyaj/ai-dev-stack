@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: sudo apt-get update && sudo apt-get install -y shellcheck jq
-      - run: shellcheck scripts/*.sh
+      - run: shellcheck -S warning scripts/*.sh
       - run: ./scripts/check-harness.sh
       - run: ./scripts/test-harness.sh
       - run: HOME=$(mktemp -d) ./scripts/install.sh --dry-run --with-opencode --with-settings

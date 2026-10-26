@@ -262,7 +262,7 @@ check_project() {
     local current_status
     current_status="$project/docs/CURRENT-STATUS.md"
     if [ -f "$current_status" ]; then
-      local st_mtime status_age newest_commit
+      local st_mtime newest_commit
       if stat -c '%Y' "$current_status" >/dev/null 2>&1; then
         st_mtime="$(stat -c '%Y' "$current_status")"
       else
@@ -304,4 +304,3 @@ elif [ "$WARN" -gt 0 ]; then
 else
   exit 0
 fi
-EOF

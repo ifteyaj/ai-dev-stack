@@ -70,7 +70,7 @@ rm_links() {
 }
 rm_links
 
-LATEST="$(ls -1dt "$BACKUP_ROOT"/*/ 2>/dev/null | head -1 || true)"
+LATEST=""; for d in "$BACKUP_ROOT"/*/; do [ -d "$d" ] && LATEST="$d"; done
 if [ -n "$LATEST" ]; then
   if [ "$DRY_RUN" -eq 1 ]; then
     printf '[dry-run] restore backup: %s -> %s\n' "$LATEST" "$CLAUDE_DIR"
