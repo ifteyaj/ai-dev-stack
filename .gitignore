@@ -1,0 +1,24 @@
+# OS and editor noise
+.DS_Store
+*.swp
+
+# Secrets and local machine state
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+!.env.example
+
+# Generated / disposable artifacts
+graphify-out/
+node_modules/
+__pycache__/
+.venv/
+dist/
+build/
+*.log
+
+# Local project checkouts (projects/ holds a register, not the code)
+projects/*/
+!projects/README.md
