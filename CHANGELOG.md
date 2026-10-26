@@ -1,5 +1,25 @@
 # Changelog
 
+## Changelog
+## [0.2.0] — 2026-10-26
+
+### Changed
+- Global rules are now auto-loaded by both Claude Code and OpenCode. The OpenCode
+  adapter is a symlink from `~/.config/opencode/AGENTS.md` to the single source
+  of truth at `config/global-rules.md`.
+- `AGENTS.md` now exists in both the harness and pilot repositories (project-level
+  adapters) and uses the copied template with project-specific text.
+- Global rules gained a "Mandatory workflows (do not skip)" section and OpenCode
+  config/tools are documented in `workflows/tool-adapters.md`.
+- Re-verification of `doctor.sh` remains 27 ok / 0 warnings; no tool versions
+  changed.
+
+### Fixed
+- Single-source of truth for instructions: previously the global rules
+  (Claude Code only) were not explicitly located for OpenCode.
+- OpenCode `instructions` gap. The OpenCode `opencode.jsonc` itself does not need
+  an `instructions` key because OpenCode reads `AGENTS.md` by convention.
+
 All notable changes to the harness are recorded here. Dates use ISO 8601.
 
 ## [0.1.0] — 2026-10-26

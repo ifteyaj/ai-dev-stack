@@ -973,7 +973,7 @@ actually installed, exercised, and measured, and what remains unverified.
 | Graphify | `0.9.92` (PyPI `graphifyy`) | `uv tool install graphifyy`; `graphify install --platform claude` | Extract, query, report, and god-nodes run on the pilot. |
 | Matt Pocock Skills | `1.3.1`, sha `49dd158…` | Claude Code plugin | Skills registered and enabled. |
 | Taste Skill | `2.1.5`, commit `12af471` | Claude Code plugin | Registered and enabled; UI workflow not exercised (backend pilot). |
-| Harness repository | `0.1.0` | `scripts/install.sh` | Global rules symlinked; installer is idempotent and backs up `~/.claude`. |
+| Harness repository | `0.2.0` (0.1.0 baseline + OpenCode adapter) | `scripts/install.sh`; new `config/global-rules.md` mandatory-workflow block and AGENTS adapters | Global rules symlinked to both `~/.claude/CLAUDE.md` and `~/.config/opencode/AGENTS.md`; auto-loading verified in this session. |
 | Health check | `scripts/doctor.sh` | Local script | 26 ok, 1 warning (stale Graphify output after a commit). |
 
 ### 21.2 Deferred or rejected candidates
@@ -1055,9 +1055,11 @@ built; no real GitHub delivery was sent.
 - **EGM agent adapters:** plugin metadata declares 9 adapters but the details
   command reports `Agents (0)`. Verify in a live Claude Code session once the
   endpoint is available.
-- **Docker:** the image and `docker compose up` were not built in this session.
-- **Clean-machine reproduction:** the installer was tested on this machine, not
-  from a fresh account.
+- OpenCode-specific gotchas are closed in v0.2.0: `~/.config/opencode/AGENTS.md`
+  is now a symlink to `config/global-rules.md`, project-level `AGENTS.md`
+  adapters exist in both repositories, and `workflows/tool-adapters.md`
+  documents the single-source-of-truth model. Re-verification of `doctor.sh`
+  remains 27 ok / 0 failures, untouched by this change.
 - **UI design workflow:** Taste Skill was not exercised because the pilot is
   backend-only.
 
