@@ -1,6 +1,16 @@
 # Changelog
 
 ## Changelog
+## [0.5.1] — 2026-10-26
+
+### Changed
+- Hardened `guard-bash.sh` against force-push, hook-skip, and recursive
+  delete bypasses, with multiline/extra-space tests.
+- `secret-scan.sh` now prints only line numbers, not values, and scans more
+  secret patterns.
+- Both hooks fail closed when `jq` is missing.
+- `make check` and CI lint config/hooks/tests with `shellcheck -S warning`.
+
 ## [0.5.0] — 2026-10-26
 
 ### Added

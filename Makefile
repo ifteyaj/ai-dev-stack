@@ -3,7 +3,7 @@
 install:
 	@./scripts/install.sh --with-opencode --with-settings
 check:
-	@./scripts/check-harness.sh && ./scripts/test-harness.sh && shellcheck scripts/*.sh
+	@./scripts/check-harness.sh && ./scripts/test-harness.sh && shellcheck -S warning scripts/*.sh config/hooks/*.sh tests/*.sh
 doctor:
 	@./scripts/doctor.sh $(P)
 update:
