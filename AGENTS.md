@@ -34,4 +34,3 @@ is documented in `AI_Coding_Harness_Spec_Driven_Engineering_Master_Document.md`.
 - Claim a workflow or tool ran that was not actually executed. Record gaps
   (402, missing binary, unverified deploy) in `CURRENT-STATUS.md` of the
   affected project.
-EOF

@@ -119,6 +119,13 @@ else
   bad "graphify not found on PATH"
 fi
 
+section "Dependencies"
+if command -v jq >/dev/null 2>&1; then
+  ok "jq on PATH ($(jq --version 2>/dev/null | head -1))"
+else
+  warn "jq not found on PATH (needed for settings/hooks baseline)"
+fi
+
 section "OpenCode"
 if command -v opencode >/dev/null 2>&1; then
   ok "opencode on PATH ($(opencode --version 2>/dev/null | head -1))"

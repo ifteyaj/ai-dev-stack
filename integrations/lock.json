@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "tools": {
+    "egm": {
+      "install": "egm@egm",
+      "version": "0.1.0",
+      "commit": "3d0b348"
+    },
+    "graphify": {
+      "install": "graphifyy",
+      "version": "0.9.92"
+    },
+    "matt": {
+      "install": "mattpocock-skills@claude-plugins-official",
+      "version": "1.3.1"
+    },
+    "taste": {
+      "install": "taste-skill@taste-skill",
+      "version": "2.1.5",
+      "commit": "12af471"
+    }
+  }
+}

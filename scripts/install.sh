@@ -13,6 +13,7 @@ DRY_RUN=0
 BACKUP_ONLY=0
 WITH_CUSTOM_SKILLS=0
 WITH_OPENCODE=0
+WITH_SETTINGS=0
 
 usage() {
   cat <<'EOF'
@@ -23,10 +24,12 @@ Options:
   --backup-only         Back up ~/.claude configuration and exit.
   --with-custom-skills  Link skills/custom/* into ~/.claude/skills/.
   --with-opencode       Link OpenCode AGENTS.md to the shared global rules.
+  --with-settings       Merge config/settings.baseline.json into ~/.claude/settings.json
+                        (never overwrites; backs up first).
   -h, --help            Show this help.
 
 The installer owns only config/global-rules.md and (optionally) local custom
-skills. It never installs third-party plugins or edits settings.json.
+skills and settings. It never installs third-party plugins or edits settings.json.
 EOF
 }
 
@@ -36,6 +39,7 @@ while [ $# -gt 0 ]; do
     --backup-only) BACKUP_ONLY=1 ;;
     --with-custom-skills) WITH_CUSTOM_SKILLS=1 ;;
     --with-opencode) WITH_OPENCODE=1 ;;
+    --with-settings) WITH_SETTINGS=1 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown option: $1" >&2; usage; exit 2 ;;
   esac
@@ -130,6 +134,39 @@ if [ "$WITH_CUSTOM_SKILLS" -eq 1 ]; then
     run ln -s "${skill_dir%/}" "$target"
     printf 'Custom skill linked: %s -> %s\n' "$target" "${skill_dir%/}"
   done
+fi
+
+if [ "$WITH_SETTINGS" -eq 1 ]; then
+  if ! command -v jq >/dev/null 2>&1; then
+    echo "jq is required for --with-settings" >&2; exit 1
+  fi
+  if [ ! -f "$ROOT/config/settings.baseline.json" ]; then
+    echo "Missing $ROOT/config/settings.baseline.json" >&2
+    exit 1
+  fi
+  backup_settings() {
+    local dir="$BACKUP_ROOT/$STAMP-settings"
+    if [ "$DRY_RUN" -eq 1 ]; then
+      printf '[dry-run] back up %s to %s\n' "$CLAUDE_DIR/settings.json" "$dir"
+      return 0
+    fi
+    mkdir -p "$dir"
+    if [ -e "$CLAUDE_DIR/settings.json" ] || [ -L "$CLAUDE_DIR/settings.json" ]; then
+      cp -RL "$CLAUDE_DIR/settings.json" "$dir/" 2>/dev/null || true
+    fi
+    printf 'Settings backup written: %s\n' "$dir"
+  }
+  backup_settings
+  if [ "$DRY_RUN" -eq 0 ]; then
+    if [ -f "$CLAUDE_DIR/settings.json" ]; then
+      jq -s '.[0] * .[1]' "$ROOT/config/settings.baseline.json" "$CLAUDE_DIR/settings.json" > "$CLAUDE_DIR/settings.json.tmp"
+      mv "$CLAUDE_DIR/settings.json.tmp" "$CLAUDE_DIR/settings.json"
+      printf 'Settings merged: config/settings.baseline.json + existing ~/.claude/settings.json\n'
+    else
+      cp "$ROOT/config/settings.baseline.json" "$CLAUDE_DIR/settings.json"
+      printf 'Settings installed: config/settings.baseline.json -> ~/.claude/settings.json\n'
+    fi
+  fi
 fi
 
 cat <<EOF

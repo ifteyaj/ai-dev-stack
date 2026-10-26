@@ -1,0 +1,19 @@
+name: check
+on: [push, pull_request]
+jobs:
+  harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y shellcheck jq
+      - run: shellcheck scripts/*.sh
+      - run: ./scripts/check-harness.sh
+      - run: ./scripts/test-harness.sh
+      - run: HOME=$(mktemp -d) ./scripts/install.sh --dry-run --with-opencode --with-settings
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --max-concurrency 4 '**/*.md'

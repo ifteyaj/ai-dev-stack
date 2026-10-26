@@ -990,7 +990,7 @@ actually installed, exercised, and measured, and what remains unverified.
 
 ### 21.3 Pilot: M1 webhook intake
 
-- Repository: `/Users/ifteyajahmed/Desktop/agentic-cicd`
+- Repository: `~/Desktop/agentic-cicd`
 - Branch: `harness/m1-webhook-intake`
 - Implementation commit: `99b1892`
 - Spec: `docs/designs/m1-webhook-intake.md`, **Approved (revision 4)**

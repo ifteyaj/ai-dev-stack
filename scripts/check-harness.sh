@@ -55,6 +55,21 @@ grep -q 'Harness schema:' "$ROOT/projects/README.md" \
   && ok "projects/README.md declares a harness schema" \
   || bad "projects/README.md missing harness schema marker"
 
+section "Portability"
+if git -C "$ROOT" grep -nE '/Users/[a-zA-Z0-9._-]+|/home/[a-zA-Z0-9._-]+' -- . ':!CHANGELOG.md' >/dev/null 2>&1; then
+  bad "machine-specific absolute paths found:"
+  git -C "$ROOT" grep -nE '/Users/[a-zA-Z0-9._-]+|/home/[a-zA-Z0-9._-]+' -- . ':!CHANGELOG.md' | head -5
+else
+  ok "no machine-specific paths"
+fi
+
+section "Stray artifacts"
+if grep -lE '^EOF$' "$ROOT"/*.md "$ROOT"/{config,workflows,templates,integrations}/*.md 2>/dev/null | grep -q .; then
+  bad "stray heredoc EOF line in a markdown file"
+else
+  ok "no stray EOF lines"
+fi
+
 section "Repository hygiene"
 if git -C "$ROOT" rev-parse --git-dir >/dev/null 2>&1; then
   tracked_bad="$(git -C "$ROOT" ls-files | grep -E '(^|/)\.DS_Store$|(^|/)\.env$|(^|/)\.env\.(local|production)$|\.pem$|\.key$' || true)"

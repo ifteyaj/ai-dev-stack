@@ -1,6 +1,30 @@
 # Changelog
 
 ## Changelog
+## [0.4.0] — 2026-10-26
+
+### Added
+- MIT `LICENSE`.
+- `.github/workflows/check.yml` CI with shellcheck, check-harness, acceptance
+  tests, link checking, and a clean-machine install dry run.
+- `config/settings.baseline.json` permission and hook baseline.
+- `config/hooks/guard-bash.sh` and `config/hooks/secret-scan.sh` enforcement hooks.
+- `Makefile` for one-command workflows.
+- `scripts/uninstall.sh`, `scripts/restore.sh`, and `scripts/sync-check.sh`.
+- `integrations/lock.json` machine-readable tool versions.
+- `tests/test_hooks.sh` and `tests/test_new_project.sh`.
+
+### Changed
+- `scripts/install.sh` supports `--with-settings`.
+- `scripts/check-harness.sh` checks portability, stray artifacts, and no longer
+  duplicates those checks.
+- `scripts/doctor.sh` checks `jq` availability.
+- Removed a stray heredoc `EOF` from `AGENTS.md`.
+- Replaced a machine-specific path in the master document with `~/Desktop/...`.
+
+### Fixed
+- Uninstall now restores from the newest backup directory.
+
 ## [0.3.0] — 2026-10-26
 
 ### Added
