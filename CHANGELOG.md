@@ -1,6 +1,28 @@
 # Changelog
 
 ## Changelog
+## [0.3.0] — 2026-10-26
+
+### Added
+- `scripts/check-harness.sh` for structural self-tests (required files, script
+  syntax, workflow shape, template parity, schema marker, repository hygiene).
+- `scripts/new-project.sh` to scaffold a project repository from templates.
+- `./scripts/install.sh --with-opencode` to install the OpenCode adapter
+  automatically.
+- Portable standards directory linked as `~/.claude/config`.
+- Parity marker convention for project adapter templates.
+- Harness schema version (1) recorded in `projects/README.md`.
+
+### Changed
+- `scripts/doctor.sh` now uses `claude plugin list --json`, checks OpenCode,
+  portable standards, and reports plugin versions.
+- `workflows/opencode.md` converted from pilot-specific adapter text to a
+  generic harness workflow.
+- Global rules document the installed standards location.
+
+### Fixed
+- Pilot-project contamination in `workflows/opencode.md`.
+
 ## [0.2.0] — 2026-10-26
 
 ### Changed

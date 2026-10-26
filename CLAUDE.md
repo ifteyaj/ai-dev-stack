@@ -32,6 +32,7 @@ source code.
 
 ```bash
 ./scripts/doctor.sh
+./scripts/check-harness.sh
 ./scripts/install.sh --dry-run
 bash -n scripts/*.sh
 ```

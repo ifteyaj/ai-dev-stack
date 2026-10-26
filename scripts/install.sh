@@ -12,6 +12,7 @@ STAMP="$(date +%Y%m%dT%H%M%S)"
 DRY_RUN=0
 BACKUP_ONLY=0
 WITH_CUSTOM_SKILLS=0
+WITH_OPENCODE=0
 
 usage() {
   cat <<'EOF'
@@ -21,6 +22,7 @@ Options:
   --dry-run             Print actions without changing anything.
   --backup-only         Back up ~/.claude configuration and exit.
   --with-custom-skills  Link skills/custom/* into ~/.claude/skills/.
+  --with-opencode       Link OpenCode AGENTS.md to the shared global rules.
   -h, --help            Show this help.
 
 The installer owns only config/global-rules.md and (optionally) local custom
@@ -33,6 +35,7 @@ while [ $# -gt 0 ]; do
     --dry-run) DRY_RUN=1 ;;
     --backup-only) BACKUP_ONLY=1 ;;
     --with-custom-skills) WITH_CUSTOM_SKILLS=1 ;;
+    --with-opencode) WITH_OPENCODE=1 ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown option: $1" >&2; usage; exit 2 ;;
   esac
@@ -86,6 +89,32 @@ else
   fi
   run ln -s "$GLOBAL_RULES" "$LINK"
   printf 'Global instructions linked: %s -> %s\n' "$LINK" "$GLOBAL_RULES"
+fi
+
+# Expose the portable standards directory alongside the global rules.
+CONFIG_LINK="$CLAUDE_DIR/config"
+if [ -L "$CONFIG_LINK" ] && [ "$(readlink "$CONFIG_LINK")" = "$ROOT/config" ]; then
+  echo "Harness standards already linked: $CONFIG_LINK -> $ROOT/config"
+elif [ -e "$CONFIG_LINK" ] || [ -L "$CONFIG_LINK" ]; then
+  echo "Harness standards path already exists, leaving it alone: $CONFIG_LINK" >&2
+else
+  run ln -s "$ROOT/config" "$CONFIG_LINK"
+  printf 'Harness standards linked: %s -> %s\n' "$CONFIG_LINK" "$ROOT/config"
+fi
+
+if [ "$WITH_OPENCODE" -eq 1 ]; then
+  OPENCODE_DIR="${OPENCODE_CONFIG_DIR:-$HOME/.config/opencode}"
+  run mkdir -p "$OPENCODE_DIR"
+  OC_LINK="$OPENCODE_DIR/AGENTS.md"
+  if [ -L "$OC_LINK" ] && [ "$(readlink "$OC_LINK")" = "$GLOBAL_RULES" ]; then
+    echo "OpenCode instructions already linked: $OC_LINK -> $GLOBAL_RULES"
+  else
+    if [ -e "$OC_LINK" ] || [ -L "$OC_LINK" ]; then
+      run rm -f "$OC_LINK"
+    fi
+    run ln -s "$GLOBAL_RULES" "$OC_LINK"
+    printf 'OpenCode instructions linked: %s -> %s\n' "$OC_LINK" "$GLOBAL_RULES"
+  fi
 fi
 
 if [ "$WITH_CUSTOM_SKILLS" -eq 1 ]; then

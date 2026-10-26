@@ -80,6 +80,17 @@ After meaningful work:
 - Record remaining work, known limitations, and untested areas.
 - Commit a coherent change with a clear message.
 
+## Installed standards
+
+When installed, portable standards live in `~/.claude/config/` and are part of
+this harness:
+
+- Coding: `~/.claude/config/coding-standards.md`
+- Design: `~/.claude/config/design-standards.md`
+- Safety: `~/.claude/config/safety.md`
+
+A project's own conventions, linter configuration, or existing code still wins.
+
 ## Installed assets
 
 - **Graphify** (`~/.claude/skills/graphify/SKILL.md`): when the user types

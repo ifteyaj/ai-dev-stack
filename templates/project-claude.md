@@ -1,4 +1,5 @@
 # <Project name> — agent instructions
+<!-- harness-parity: project-adapter v1 -->
 
 ## What this project is
 

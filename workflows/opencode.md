@@ -1,44 +1,49 @@
-# Project instructions: agentic-cicd (OpenCode)
+# Workflow: OpenCode adapter
 
-Keep this short: durable product/architecture data lives in `CLAUDE.md` and
-`docs/`. This file exists so OpenCode auto-loads the harness global rules and
-the pointers below; it does not duplicate their content.
+OpenCode is a supported second entry point for projects that already use this
+harness. It must reuse the same methodology without creating a second source of
+truth.
 
-## Stack and commands (run from `api/`)
+## Shared source of truth
+
+- `config/global-rules.md` is installed as both `~/.claude/CLAUDE.md` and
+  `~/.config/opencode/AGENTS.md`.
+- Project facts live in `CLAUDE.md`, `AGENTS.md`, and `docs/` in the project
+  repository.
+- See `workflows/tool-adapters.md` for what transfers and what does not.
+
+## Project adapter
+
+Create the project adapter from `templates/project-opencode-agents.md`:
 
 ```bash
-uv sync
-uv run pytest -q
-uv run ruff check .
-uv run ruff format --check .
-uv run mypy
-uv run uvicorn app.main:app --reload   # bind 127.0.0.1
+cp <harness>/templates/project-opencode-agents.md AGENTS.md
 ```
 
-## How to use the harness here
+Keep it short and project-specific. It must not duplicate global rules,
+workflows, or templates.
 
-- Read `CLAUDE.md`, `docs/ARCHITECTURE.md`, and the active spec under
-  `docs/designs/` before changing code.
-- Substantial features: Elephant-Goldfish-style spec (requirements, acceptance
-  criteria, assumptions, edge cases), independent fresh-context review, then
-  implementation with the verification ladder.
-- Independent review runs in a fresh subagent/sessions; record findings in the
-  spec with IDs and resolutions.
-- Keep `docs/CURRENT-STATUS.md` current at the end of a session.
-- Report what was run, what passed, and what was not run. Do not disable
-  lint/type checks to make tests pass. Do not claim a workflow ran.
-- M1 is single-process: one run works as intended, runs do not survive restart,
-  do not add worker flags.
+## Setup steps for a maintainer
 
-## Additional context
+1. Install or verify OpenCode (`opencode --version`).
+2. Run `./scripts/install.sh --with-opencode`.
+3. Run `./scripts/doctor.sh <project-dir>`.
+4. Confirm `~/.config/opencode/AGENTS.md` resolves to
+   `config/global-rules.md`.
 
-- Product, requirements, decisions, roadmap: `docs/PRODUCT.md`,
-  `docs/REQUIREMENTS.md`, `docs/DECISIONS.md`, `docs/ROADMAP.md`
-- Specs: `docs/designs/`
-- Status: `docs/CURRENT-STATUS.md`
+## Known differences
 
-## Do not
+- Claude Code plugins such as EGM, Matt Pocock, and Taste Skill are not
+  OpenCode plugins. Use OpenCode subagents, command files, or the CLI for
+  equivalent workflows.
+- Graphify has verified installs on both sides.
+- EGM model-backed commands remain unverified until the Claude Code endpoint
+  issue is resolved; reviews may run through fresh-context subagents.
 
-- Duplicate global rules, workflows, or templates here — they live in the
-  harness and are auto-loaded from `~/.config/opencode/AGENTS.md`.
-- Merge without tests for changed behaviour.
+## Verification
+
+- Open the same small pilot task in Claude Code and OpenCode.
+- Compare specification quality, review findings, regressions, test results,
+  manual interventions, and time spent.
+- Record tool-specific gaps in `projects/README.md` or the project's
+  `CURRENT-STATUS.md`, not as silent workarounds in another file.

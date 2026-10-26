@@ -1,5 +1,7 @@
 # Workflow: new project
 
+A scaffold is available: `./scripts/new-project.sh <target-dir> [project-name]`.
+
 Use this when starting a repository that will use the harness.
 
 ## 1. Decide the project boundary

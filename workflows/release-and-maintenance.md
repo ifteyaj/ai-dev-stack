@@ -42,7 +42,7 @@ graphify . --update --wiki
 3. Test the core workflow in a disposable project.
 4. Update `integrations/upstream-repositories.md` and the tool-specific note.
 5. Keep a rollback path (previous plugin version or a Git revert).
-6. Run `./scripts/doctor.sh`.
+6. Run `./scripts/doctor.sh` and `./scripts/check-harness.sh`.
 
 ## Backup and rollback
 

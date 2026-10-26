@@ -1,4 +1,5 @@
 # OpenCode project instructions template
+<!-- harness-parity: project-adapter v1 -->
 
 Copy this to `AGENTS.md` at the root of an OpenCode-managed project. Keep it
 short: the durable specifics live in `CLAUDE.md` and `docs/`. Use this only when

@@ -1,5 +1,7 @@
 # Projects using the harness
 
+**Harness schema:** 1 (bump when template/adapter shapes change; see `workflows/tool-adapters.md`).
+
 The harness keeps only a register here. Application code, product docs, specs,
 and generated graphs stay in each project repository.
 

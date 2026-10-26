@@ -32,7 +32,7 @@ Deferred and rejected candidates are recorded with reasons in
 ./scripts/install.sh
 
 # 2b. Configure OpenCode as well (once per machine)
-#     ln -sf <harness>/config/global-rules.md ~/.config/opencode/AGENTS.md
+#     ./scripts/install.sh --with-opencode
 #     See workflows/tool-adapters.md
 
 # 3. Install third-party tools using their documented mechanisms
@@ -40,6 +40,7 @@ Deferred and rejected candidates are recorded with reasons in
 
 # 4. Check the environment
 ./scripts/doctor.sh
+./scripts/check-harness.sh
 
 # 5. Start a project
 cat workflows/new-project.md
