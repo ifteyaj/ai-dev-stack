@@ -1,6 +1,25 @@
 # Changelog
 
 ## Changelog
+## [0.5.0] — 2026-10-26
+
+### Added
+- Tiered, multi-project `doctor.sh` (`--all`, `--project`) with tier 1 warning/
+  failure exit codes and lockfile drift checks.
+- `config/adapters.json` and a generic `--with-adapter <name>` install path.
+- `scripts/status.sh` (`make status`) for installed versions and project
+  freshness.
+- `config/hooks/session-start.sh` for project orientation at session start.
+- `scripts/check-changelog.sh` (`make changelog-check`) for config/workflow
+  discipline.
+- `Dockerfile` and `.dockerignore` for a clean-machine smoke test.
+- Additional acceptance tests for install idempotence and uninstall restore.
+
+### Changed
+- `doctor.sh` checks adapter drift, CURRENT-STATUS freshness, and uses lock
+  comparison by default.
+- `scripts/sync-check.sh` now reports both adapter files and their versions.
+
 ## [0.4.0] — 2026-10-26
 
 ### Added

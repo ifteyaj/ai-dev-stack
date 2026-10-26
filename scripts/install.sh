@@ -14,6 +14,7 @@ BACKUP_ONLY=0
 WITH_CUSTOM_SKILLS=0
 WITH_OPENCODE=0
 WITH_SETTINGS=0
+ADAPTERS=()
 
 usage() {
   cat <<'EOF'
@@ -26,6 +27,7 @@ Options:
   --with-opencode       Link OpenCode AGENTS.md to the shared global rules.
   --with-settings       Merge config/settings.baseline.json into ~/.claude/settings.json
                         (never overwrites; backs up first).
+  --with-adapter <name> Use an adapter entry from config/adapters.json.
   -h, --help            Show this help.
 
 The installer owns only config/global-rules.md and (optionally) local custom
@@ -40,6 +42,7 @@ while [ $# -gt 0 ]; do
     --with-custom-skills) WITH_CUSTOM_SKILLS=1 ;;
     --with-opencode) WITH_OPENCODE=1 ;;
     --with-settings) WITH_SETTINGS=1 ;;
+    --with-adapter) ADAPTERS+=("$2"); shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown option: $1" >&2; usage; exit 2 ;;
   esac
@@ -168,6 +171,41 @@ if [ "$WITH_SETTINGS" -eq 1 ]; then
     fi
   fi
 fi
+
+for adapter in ${ADAPTERS[@]+"${ADAPTERS[@]}"}; do
+  [ -z "$adapter" ] && continue
+  info="$(python3 - "$ROOT/config/adapters.json" "$adapter" 2>/dev/null <<'PY'
+import json, sys
+data = json.load(open(sys.argv[1]))
+entry = data.get("adapters", {}).get(sys.argv[2])
+if not entry:
+    print("MISSING")
+else:
+    print(entry.get("target", "") + "\t" + entry.get("source", ""))
+PY
+)"
+  if [ "$info" = "MISSING" ] || [ -z "$info" ]; then
+    echo "Unknown adapter: $adapter" >&2
+    exit 1
+  fi
+  IFS=$'\t' read -r target source <<< "$info"
+  target="${target/#\~/$HOME}"
+  source_path="$ROOT/$source"
+  if [ ! -f "$source_path" ]; then
+    echo "Adapter source missing for $adapter: $source_path" >&2
+    exit 1
+  fi
+  run mkdir -p "$(dirname "$target")"
+  if [ -L "$target" ] && [ "$(readlink "$target")" = "$source_path" ]; then
+    echo "Adapter already linked: $target -> $source_path"
+  else
+    if [ -e "$target" ] || [ -L "$target" ]; then
+      run rm -f "$target"
+    fi
+    run ln -s "$source_path" "$target"
+    printf 'Adapter linked: %s -> %s\n' "$target" "$source_path"
+  fi
+done
 
 cat <<EOF
 

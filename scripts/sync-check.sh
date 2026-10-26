@@ -20,30 +20,58 @@ if [ ! -f "$PROJECT/CLAUDE.md" ]; then
   exit 1
 fi
 
-HARNESS_VERSION="$(grep -oE 'harness-parity: project-adapter v[0-9]+' "$ROOT/templates/project-claude.md" | head -1 | grep -oE 'v[0-9]+')"
+check_file() {
+  local file="$1"
+  grep -oE 'harness-parity: project-adapter v[0-9]+' "$file" 2>/dev/null | head -1 | grep -oE 'v[0-9]+$' || true
+}
+
+HARNESS_VERSION="$(check_file "$ROOT/templates/project-claude.md")"
 if [ -z "$HARNESS_VERSION" ]; then
   echo "could not determine harness adapter version from template" >&2
   exit 1
 fi
 HARNESS_VERSION="${HARNESS_VERSION#v}"
 
-PROJECT_VERSION="$(grep -oE 'harness-parity: project-adapter v[0-9]+' "$PROJECT/CLAUDE.md" | head -1 | grep -oE 'v[0-9]+' || true)"
-if [ -z "$PROJECT_VERSION" ]; then
-  echo "no parity marker found in $PROJECT/CLAUDE.md" >&2
-  exit 1
-fi
+echo "Harness adapter version: v$HARNESS_VERSION"
 
-if [ "$PROJECT_VERSION" = "$HARNESS_VERSION" ]; then
-  echo "[ok] $PROJECT is on adapter $PROJECT_VERSION, harness is on $HARNESS_VERSION"
-  exit 0
-fi
+status=0
+for filename in CLAUDE.md AGENTS.md; do
+  if [ -f "$PROJECT/$filename" ]; then
+    pv="$(check_file "$PROJECT/$filename")"
+    pv="${pv#v}"
+    if [ -z "$pv" ]; then
+      echo "[warn] $PROJECT/$filename has no parity marker" >&2
+      status=1
+    elif [ "$pv" = "$HARNESS_VERSION" ]; then
+      echo "[ok]  $PROJECT/$filename on v$pv"
+    else
+      echo "[warn] $PROJECT/$filename on v$pv (harness v$HARNESS_VERSION)" >&2
+      status=1
+    fi
+  fi
+done
 
-echo "[warn] $PROJECT is on adapter $PROJECT_VERSION, harness is on $HARNESS_VERSION" >&2
+for filename in CLAUDE.md AGENTS.md; do
+  if [ -f "$PROJECT/$filename" ]; then
+    PROJECT_VERSION="$(check_file "$PROJECT/$filename")"
+    PROJECT_VERSION="${PROJECT_VERSION#v}"
+    [ -n "$PROJECT_VERSION" ] || continue
+    if [ "$PROJECT_VERSION" != "$HARNESS_VERSION" ]; then
+      case "$filename" in
+        CLAUDE.md) tpl="project-claude.md" ;;
+        AGENTS.md) tpl="project-opencode-agents.md" ;;
+        *) tpl="$filename" ;;
+      esac
+      echo "To update $PROJECT/$filename, compare with $ROOT/templates/$tpl" >&2
+    fi
+  fi
+done
 
 if [ "$APPLY" -eq 1 ]; then
-  echo "sync-check --apply: not supported yet for this marker version."
+  echo "sync-check --apply currently requires harness markers: supported for explicit blocks only." >&2
+  echo "No files changed."
   exit 2
 fi
 
-echo "update this project from the harness template and re-check."
-exit 1
+[ "$status" -eq 0 ] || exit 1
+exit 0

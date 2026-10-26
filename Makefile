@@ -1,9 +1,9 @@
-.PHONY: install check doctor update new uninstall
+.PHONY: install check doctor update new uninstall test status
 
 install:
 	@./scripts/install.sh --with-opencode --with-settings
 check:
-	@./scripts/check-harness.sh && shellcheck scripts/*.sh
+	@./scripts/check-harness.sh && ./scripts/test-harness.sh && shellcheck scripts/*.sh
 doctor:
 	@./scripts/doctor.sh $(P)
 update:
@@ -12,3 +12,9 @@ new:
 	@./scripts/new-project.sh $(DIR) $(NAME)
 uninstall:
 	@./scripts/uninstall.sh
+test:
+	@./scripts/test-harness.sh
+status:
+	@./scripts/status.sh
+changelog-check:
+	@./scripts/check-changelog.sh

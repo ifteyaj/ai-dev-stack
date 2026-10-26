@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "adapters": {
+    "opencode": {
+      "target": "~/.config/opencode/AGENTS.md",
+      "source": "config/global-rules.md",
+      "notes": "Verified global instructions adapter."
+    }
+  }
+}
